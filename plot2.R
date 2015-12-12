@@ -4,7 +4,7 @@
 library(data.table)
 library(dplyr)
 library(lubridate)
-library(lattice)
+
 if(!file.exists("ExData_Plotting2")){
         dir.create("ExData_Plotting2")
 }
