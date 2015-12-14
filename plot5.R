@@ -1,5 +1,5 @@
 # expl-data-analisys course project #2
-# Plot 4
+# Plot 5
 
 library(dplyr)
 library(ggplot2)
@@ -24,19 +24,21 @@ if(!file.exists("./ExData_Plotting2/NEI_data.zip")){
 NEI <- readRDS("./ExData_Plotting2/summarySCC_PM25.rds")
 SCC <- readRDS("./ExData_Plotting2/Source_Classification_Code.rds")
 
-# Gather and filter out only coal combustion
-x <- SCC %>% filter(grepl("[Cc]ombustion", Short.Name)) %>% filter(grepl("[Cc]oal", Short.Name))
-coal_combustion <- NEI %>% filter(SCC %in% x$SCC)
-yrs <- unique(coal_combustion$year)
+# Including Highway and off-highway
+#grep("[Hh]ighway", SCC$Short.Name, value = TRUE)
+# Gather and filter out only motor vehicle sources for baltimore
+x <- SCC %>% filter(grepl("[Hh]ighway", Short.Name))
+vehicle_emissions_baltimore <- NEI %>% filter(SCC %in% x$SCC) %>% filter(fips == "24510")
+yrs <- unique(vehicle_emissions_baltimore$year)
 y <- c()
 for(i in yrs){
-        x <- filter(coal_combustion, coal_combustion$year == i)
+        x <- filter(vehicle_emissions_baltimore, vehicle_emissions_baltimore$year == i)
         y <- c(y, sum(x$Emissions)) 
 } 
-total_coal_emissions <- as.data.frame(cbind(Years = yrs, Total_Coal_Emissions = y))
+# Total Vehicle Emissions Baltimore
+tveb <- as.data.frame(cbind(Years = yrs, Total_Vehicle_Emissions_Baltimore = y))
 
 # Open the plot device
-png(filename = "./ExData_Plotting2/plot4.png", width = 480, height = 480)
-qplot(Years, Total_Coal_Emissions, data = total_coal_emissions, geom = c("point","line"))
+png(filename = "./ExData_Plotting2/plot5.png", width = 480, height = 480)
+qplot(Years, Total_Vehicle_Emissions_Baltimore, data = tveb, geom = c("point","line"))
 dev.off()
-

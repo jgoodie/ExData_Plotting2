@@ -1,9 +1,7 @@
 # expl-data-analisys course project #2
 # Plot 3
 
-library(data.table)
 library(dplyr)
-library(lubridate)
 library(ggplot2)
 
 if(!file.exists("ExData_Plotting2")){
@@ -37,6 +35,9 @@ baltimore <- filter(NEI, fips == "24510") %>%
 # nonroad <- filter(baltimore, type == "NON-ROAD")
 # nonpoint <- filter(baltimore, type == "NONPOINT")
 # point <- filter(baltimore, type == "POINT")
+#
+# Note to self: Seriously look into Dimesion Reduction on this one. 
+#
 
 # Open the plot device
 png(filename = "./ExData_Plotting2/plot3.png", width = 800, height = 600)

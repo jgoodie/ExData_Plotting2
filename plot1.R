@@ -1,9 +1,7 @@
 # expl-data-analisys course project #2
 # Plot 1
 
-library(data.table)
 library(dplyr)
-library(lubridate)
 
 if(!file.exists("ExData_Plotting2")){
         dir.create("ExData_Plotting2")
