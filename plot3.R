@@ -36,7 +36,7 @@ baltimore <- filter(NEI, fips == "24510") %>%
 # nonpoint <- filter(baltimore, type == "NONPOINT")
 # point <- filter(baltimore, type == "POINT")
 #
-# Note to self: Seriously look into Dimesion Reduction on this one. 
+# Note to self: Seriously look into Dimension Reduction on this one. 
 #
 
 # Open the plot device

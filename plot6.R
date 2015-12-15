@@ -1,8 +1,11 @@
 # expl-data-analisys course project #2
-# Plot 5
+# Plot 6
 
 library(dplyr)
 library(ggplot2)
+library("gridExtra")
+library(RColorBrewer)
+
 
 if(!file.exists("ExData_Plotting2")){
         dir.create("ExData_Plotting2")
@@ -26,19 +29,30 @@ SCC <- readRDS("./ExData_Plotting2/Source_Classification_Code.rds")
 
 # Including Highway and off-highway
 # grep("[Hh]ighway", SCC$Short.Name, value = TRUE)
-# Gather and filter out only motor vehicle sources for baltimore
+# Gather and filter out only motor vehicle sources for baltimore and LA
 x <- SCC %>% filter(grepl("[Hh]ighway", Short.Name))
 vehicle_emissions_baltimore <- NEI %>% filter(SCC %in% x$SCC) %>% filter(fips == "24510")
+vehicle_emissions_LA <- NEI %>% filter(SCC %in% x$SCC) %>% filter(fips == "06037")
 yrs <- unique(vehicle_emissions_baltimore$year)
 y <- c()
 for(i in yrs){
         x <- filter(vehicle_emissions_baltimore, vehicle_emissions_baltimore$year == i)
         y <- c(y, sum(x$Emissions)) 
 } 
-# Total Vehicle Emissions Baltimore
-tveb <- as.data.frame(cbind(Years = yrs, Total_Vehicle_Emissions_Baltimore = y))
+
+la <- c()
+for(j in yrs){
+        z <- filter(vehicle_emissions_LA, vehicle_emissions_LA$year == j)
+        la <- c(la, sum(z$Emissions)) 
+} 
+
+# Baltimore vs LA in total vehicle emissions
+bvsla <- as.data.frame(cbind(Years = yrs, Total_Vehicle_Emissions_Baltimore = y, Total_Vehicle_Emissions_LA = la))
+bvsla <- mutate(bvsla, Difference = Total_Vehicle_Emissions_LA - Total_Vehicle_Emissions_Baltimore)
 
 # Open the plot device
-png(filename = "./ExData_Plotting2/plot5.png", width = 480, height = 480)
-qplot(Years, Total_Vehicle_Emissions_Baltimore, data = tveb, geom = c("point","line"))
+png(filename = "./ExData_Plotting2/plot6.png", width = 800, height = 600)
+gb <- ggplot(bvsla, aes(x=Years, y=Total_Vehicle_Emissions_Baltimore)) + geom_boxplot() + theme_minimal()
+gla <- ggplot(bvsla, aes(x=Years, y=Total_Vehicle_Emissions_LA)) + geom_boxplot() + theme_minimal()
+grid.arrange(gb, gla, ncol=2, nrow =1)
 dev.off()
